@@ -6,7 +6,9 @@ import com.edu.ulab.app.exception.NotFoundException;
 import com.edu.ulab.app.mapper.BookMapper;
 import com.edu.ulab.app.mapper.UserMapper;
 import com.edu.ulab.app.service.BookService;
+import com.edu.ulab.app.service.InnerStorageService;
 import com.edu.ulab.app.service.UserService;
+import com.edu.ulab.app.service.impl.InnerStorageServiceImpl;
 import com.edu.ulab.app.web.request.UserBookRequest;
 import com.edu.ulab.app.web.response.UserBookResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -18,17 +20,20 @@ import java.util.Objects;
 @Slf4j
 @Component
 public class UserDataFacade {
-    private final UserService userService;
-    private final BookService bookService;
+//    private final UserService userService;
+//    private final BookService bookService;
+    private final InnerStorageService storageService;
     private final UserMapper userMapper;
     private final BookMapper bookMapper;
 
-    public UserDataFacade(UserService userService,
-                          BookService bookService,
+    public UserDataFacade(InnerStorageService storageService,
+//            UserService userService,
+//                          BookService bookService,
                           UserMapper userMapper,
                           BookMapper bookMapper) {
-        this.userService = userService;
-        this.bookService = bookService;
+//        this.userService = userService;
+//        this.bookService = bookService;
+        this.storageService = storageService;
         this.userMapper = userMapper;
         this.bookMapper = bookMapper;
     }
@@ -38,7 +43,8 @@ public class UserDataFacade {
         UserDto userDto = userMapper.userRequestToUserDto(userBookRequest.getUserRequest());
         log.info("Mapped user request: {}", userDto);
 
-        UserDto createdUser = userService.createUser(userDto);
+//        UserDto createdUser = userService.createUser(userDto);
+        UserDto createdUser = storageService.createUser(userDto);
         log.info("Created user: {}", createdUser);
 
         List<Long> bookIdList = userBookRequest.getBookRequests()
@@ -47,7 +53,8 @@ public class UserDataFacade {
                 .map(bookMapper::bookRequestToBookDto)
                 .peek(bookDto -> bookDto.setUserId(createdUser.getId()))
                 .peek(mappedBookDto -> log.info("mapped book: {}", mappedBookDto))
-                .map(bookService::createBook)
+//                .map(bookService::createBook)
+                .map(storageService::createBook)
                 .peek(createdBook -> log.info("Created book: {}", createdBook))
                 .map(BookDto::getId)
                 .toList();
