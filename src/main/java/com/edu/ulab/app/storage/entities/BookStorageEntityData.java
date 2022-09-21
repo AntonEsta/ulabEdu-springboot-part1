@@ -1,6 +1,6 @@
-package com.edu.ulab.app.storage.entities.book;
+package com.edu.ulab.app.storage.entities;
 
-import com.edu.ulab.app.storage.entities.StorageEntityData;
+import com.edu.ulab.app.storage.StorageEntityData;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;

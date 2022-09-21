@@ -1,9 +1,9 @@
 package com.edu.ulab.app.storage;
 
-import com.edu.ulab.app.storage.entities.StorageEntity;
-import com.edu.ulab.app.storage.entities.StorageEntityData;
-import com.edu.ulab.app.storage.exception.StorageEntityNotFoundException;
+import com.edu.ulab.app.storage.exceptions.StorageEntityNotFoundException;
+import com.edu.ulab.app.storage.tables.StorageTable;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -15,15 +15,15 @@ import java.util.concurrent.ConcurrentMap;
 @Component
 public class InnerStorage implements Storage {
 
-    private final ConcurrentMap<String, StorageEntity> storageEntities = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, StorageTable> storageEntities = new ConcurrentHashMap<>();
 
     private void postUpdate(StorageEntityData entityData) {
 
     }
 
-    private StorageEntity getEntityByTitle(String title) {
+    private StorageTable getEntityByTitle(String title) {
         log.info("Founding storage entity by name \"" + title + "\"");
-        StorageEntity entity = storageEntities.get(title.toLowerCase());
+        StorageTable entity = storageEntities.get(title.toLowerCase());
         if (Objects.isNull(entity)) {
             log.warn("Storage entity by name \"" + title + "\" not found.");
             throw new StorageEntityNotFoundException("Storage Entity by title \"" + title + "\" not found.");
@@ -31,29 +31,28 @@ public class InnerStorage implements Storage {
         return entity;
     }
 
-    public InnerStorage(StorageEntitySetter ... entitySetters) {
+    public InnerStorage(@Qualifier("StorageConfigEntitySetters") StorageTablesSetter... entitySetters) {
         Arrays.stream(entitySetters)
-                .forEach(s -> Objects.requireNonNull(storageEntities.put(s.getTitle().toLowerCase(), s.getStorageEntity())));
+                .filter(Objects::nonNull)
+                .forEach(s -> storageEntities.put(s.getTitle().toLowerCase(), s.getStorageEntity()));
     }
 
     public StorageEntityData create(String entityTitle, StorageEntityData data) {
 
-        StorageEntity storageEntity = getEntityByTitle(entityTitle);
+        StorageTable storageEntity = getEntityByTitle(entityTitle);
 
         try {
-            storageEntity.create(data);
+            return storageEntity.create(data);
         } catch (StorageEntityNotFoundException e) {
             log.warn("Creating new data end with error.");
             return null;
         }
-
-        return null;
     }
 
     @Override
     public StorageEntityData update(String entityTitle, StorageEntityData data) {
 
-        StorageEntity storageEntity = getEntityByTitle(entityTitle);
+        StorageTable storageEntity = getEntityByTitle(entityTitle);
 
         try {
             StorageEntityData returnEntityData = storageEntity.update(data);
@@ -71,7 +70,7 @@ public class InnerStorage implements Storage {
 
     @Override
     public StorageEntityData getEntityByKey(String entityTitle, Object id) {
-        StorageEntity storageEntity = getEntityByTitle(entityTitle);
+        StorageTable storageEntity = getEntityByTitle(entityTitle);
         try {
             storageEntity.getByKey(id);
         } catch (NoSuchMethodError e) {
@@ -83,7 +82,7 @@ public class InnerStorage implements Storage {
 
     @Override
     public void deleteEntityByKey(String entityTitle, Object id) {
-        StorageEntity storageEntity = getEntityByTitle(entityTitle);
+        StorageTable storageEntity = getEntityByTitle(entityTitle);
         try {
             storageEntity.deleteByKey(id);
         } catch (NoSuchMethodError ignored) {

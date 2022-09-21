@@ -1,4 +1,4 @@
-package com.edu.ulab.app.storage.exception;
+package com.edu.ulab.app.storage.exceptions;
 
 public class StorageEntityNotFoundException extends RuntimeException {
     public StorageEntityNotFoundException(String message) {

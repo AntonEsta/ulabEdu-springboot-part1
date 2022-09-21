@@ -1,7 +1,7 @@
 package com.edu.ulab.app.mapper;
 
 import com.edu.ulab.app.dto.UserDto;
-import com.edu.ulab.app.storage.entities.user.UserStorageEntityData;
+import com.edu.ulab.app.storage.entities.UserStorageEntityData;
 import com.edu.ulab.app.web.request.UserRequest;
 import org.mapstruct.Mapper;
 

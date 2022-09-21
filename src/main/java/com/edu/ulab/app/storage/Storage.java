@@ -1,7 +1,5 @@
 package com.edu.ulab.app.storage;
 
-import com.edu.ulab.app.storage.entities.StorageEntityData;
-
 public interface Storage {
 
     StorageEntityData create(String entityTitle, StorageEntityData storageEntityData);

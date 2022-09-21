@@ -6,22 +6,30 @@ import com.edu.ulab.app.mapper.BookMapper;
 import com.edu.ulab.app.mapper.UserMapper;
 import com.edu.ulab.app.service.InnerStorageService;
 import com.edu.ulab.app.storage.Storage;
-import com.edu.ulab.app.storage.entities.StorageEntityData;
-import com.edu.ulab.app.storage.entities.book.BookStorageEntityData;
-import com.edu.ulab.app.storage.entities.user.UserStorageEntityData;
+import com.edu.ulab.app.storage.StorageEntityData;
+import com.edu.ulab.app.storage.entities.BookStorageEntityData;
+import com.edu.ulab.app.storage.entities.UserStorageEntityData;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
 @Service
-@RequiredArgsConstructor
 public class InnerStorageServiceImpl implements InnerStorageService {
 
-    private UserMapper userMapper;
-    private BookMapper bookMapper;
+    private final UserMapper userMapper;
+    private final BookMapper bookMapper;
+
     private final Storage appInnerStorage;
+
+    public InnerStorageServiceImpl(UserMapper userMapper,
+                                   BookMapper bookMapper,
+                                   @Qualifier("appInnerStorageConfig") Storage appInnerStorage) {
+        this.userMapper = userMapper;
+        this.bookMapper = bookMapper;
+        this.appInnerStorage = appInnerStorage;
+    }
 
     @Override
     public BookDto createBook(@NonNull BookDto bookDto) {

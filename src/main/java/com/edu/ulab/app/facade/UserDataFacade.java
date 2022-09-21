@@ -2,13 +2,9 @@ package com.edu.ulab.app.facade;
 
 import com.edu.ulab.app.dto.BookDto;
 import com.edu.ulab.app.dto.UserDto;
-import com.edu.ulab.app.exception.NotFoundException;
 import com.edu.ulab.app.mapper.BookMapper;
 import com.edu.ulab.app.mapper.UserMapper;
-import com.edu.ulab.app.service.BookService;
 import com.edu.ulab.app.service.InnerStorageService;
-import com.edu.ulab.app.service.UserService;
-import com.edu.ulab.app.service.impl.InnerStorageServiceImpl;
 import com.edu.ulab.app.web.request.UserBookRequest;
 import com.edu.ulab.app.web.response.UserBookResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +18,7 @@ import java.util.Objects;
 public class UserDataFacade {
 //    private final UserService userService;
 //    private final BookService bookService;
+
     private final InnerStorageService storageService;
     private final UserMapper userMapper;
     private final BookMapper bookMapper;

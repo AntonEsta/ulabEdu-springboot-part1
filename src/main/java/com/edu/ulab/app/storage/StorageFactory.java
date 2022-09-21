@@ -1,39 +1,40 @@
 package com.edu.ulab.app.storage;
 
-import com.edu.ulab.app.storage.entities.book.BookStorageEntity;
-import com.edu.ulab.app.storage.entities.user.UserStorageEntity;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.edu.ulab.app.storage.tables.BookStorageTable;
+import com.edu.ulab.app.storage.tables.UserStorageTable;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
+
 public final class StorageFactory {
 
-    @Autowired
-    public static Storage appInnerStorage(UserStorageEntity userStorageEntity, BookStorageEntity bookStorageEntity) {
 
-        if (Objects.isNull(userStorageEntity) || Objects.isNull(bookStorageEntity)) {
-            return null;
-        }
+//    public static Storage getAppInnerStorage(UserStorageEntity userStorageEntity, BookStorageEntity bookStorageEntity) {
+    public static Storage getAppInnerStorage() {
 
-        Collection<StorageEntitySetter> entitySetters = new ArrayList<>();
+//        if (Objects.isNull(userStorageEntity) || Objects.isNull(bookStorageEntity)) {
+//            return new InnerStorage(null);
+//        }
 
-        StorageEntitySetter userEntitySetter = StorageEntitySetter.builder()
+        Collection<StorageTablesSetter> entitySetters = new ArrayList<>();
+
+        StorageTablesSetter userEntitySetter = StorageTablesSetter.builder()
                 .title("User")
-                .storageEntity(userStorageEntity)
+                .storageEntity(new UserStorageTable())
                 .build();
 
         entitySetters.add(userEntitySetter);
 
-        StorageEntitySetter bookEntitySetter = StorageEntitySetter.builder()
+        StorageTablesSetter bookEntitySetter = StorageTablesSetter.builder()
                 .title("Book")
-                .storageEntity(userStorageEntity)
+                .storageEntity(new BookStorageTable())
                 .build();
 
         entitySetters.add(bookEntitySetter);
 
-        return new InnerStorage((StorageEntitySetter[]) entitySetters.toArray());
+        return new InnerStorage(entitySetters.stream().filter(Objects::nonNull).toArray(StorageTablesSetter[]::new));
     }
 
 }
